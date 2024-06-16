@@ -27,13 +27,13 @@
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
+                    <a class="nav-link" href="C:\Users\jkiso\OneDrive\Images\pro\myproject2-main\templates\index.html">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/register">Register</a>
+                    <a class="nav-link" href=>Register</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/categories">Categories</a>
+                    <a class="nav-link" href="/C:\Users\jkiso\OneDrive\Images\pro\myproject2-main\templates\categories.html">Categories</a>
                 </li>
             </ul>
         </div>
@@ -119,4 +119,5 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
 
