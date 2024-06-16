@@ -108,7 +108,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			Path:  "/",
 		})
 
-		http.Redirect(w, r, "/", http.StatusSeeOther)
+		http.Redirect(w, r, "index.html", http.StatusSeeOther)
 		return
 	}
 
@@ -170,3 +170,22 @@ func formatDate(date string) string {
 	}
 	return t.Format("Jan 2, 2006 at 3:04pm")
 }
+func createpost(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost {
+		title := r.FormValue("title")
+		content := r.FormValue("content")
+
+		_, err := db.DB.Exec("INSERT INTO posts (title, content) VALUES (?, ?)", title, content)
+		if err != nil {
+			http.Error(w, "Internal server error: unable to save post", http.StatusInternalServerError)
+			return
+
+		}
+		http.Redirect(w, r, "index.html", http.StatusAccepted)
+
+	}
+	if err := tpl.ExecuteTemplate(w, "posts.html", nil); err != nil {
+		http.Error(w, "Internal server error: unable to execute template", http.StatusInternalServerError)
+	}
+}
+
