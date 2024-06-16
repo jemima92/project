@@ -26,8 +26,8 @@ func InitDB() {
 	createTables()
 	statement, _ := DB.Prepare("CREATE TABLE IF NOT EXISTS people (id INTEGER PRIMARY KEY, firstname TEXT, lastname TEXT)")
 	statement.Exec()
-	//statement, _ = DB.Prepare("INSERT INTO people (firstname, lastname) VALUES (?, ?)") => petit test
-	//statement.Exec("Nic", "Raboy")
+	statement, _ = DB.Prepare("INSERT INTO people (user_id, title, body) VALUES (?, ?, ?)")
+	statement.Exec("10", "title", "body ")
 	rows, _ := DB.Query("SELECT id, firstname, lastname FROM people")
 	var id int
 	var firstname string
@@ -50,7 +50,6 @@ func createTables() {
 	if err != nil {
 		log.Fatal("Failed to create users table:", err)
 	}
-
 	createPostsTable := `
 	CREATE TABLE IF NOT EXISTS posts (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,
