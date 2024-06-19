@@ -67,10 +67,12 @@
                     <a class="nav-link" href="/C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\categories.html">Categories</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/login">Login</a>
+                    <a class="nav-link" href="C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\index2.html">Login</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\profile.html">Profile</a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/post.html">Post</a>
                 </li>
             </ul>
         </div>
@@ -126,6 +128,9 @@
                             <button class="btn btn-danger dislike-btn"><i class="fas fa-thumbs-down thumb-icon"></i></button>
                             <span class="dislike-count">${post.dislikes}</span> dislikes
                         </div>
+                        <div>
+                            <small>Posted by: <strong>${post.username}</strong> at ${new Date(post.timestamp).toLocaleString()}</small>
+                        </div>
                         <h4>Comments</h4>
                         <ul class="list-unstyled comment-list">${post.comments.map(comment => `<li><span class="comment-user">${comment.user}:</span> ${comment.text}</li>`).join('')}</ul>
                         <form class="comment-form">
@@ -174,10 +179,14 @@
             const reader = new FileReader();
             reader.onloadend = function () {
                 const imageUrl = reader.result;
+                // Dummy username for demonstration (replace with actual username retrieval logic)
+                const username = "JohnDoe"; // Example: Replace with actual username retrieval logic
                 posts.push({
                     title: title,
                     content: content,
                     image: imageUrl,
+                    username: username,
+                    timestamp: new Date().toISOString(), // Current timestamp
                     likes: 0,
                     dislikes: 0,
                     comments: []
@@ -201,4 +210,5 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
 
