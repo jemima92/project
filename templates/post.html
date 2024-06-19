@@ -3,17 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Post - FlowerBlog</title>
+    <title>FlowerBlog - Post and Comment</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
+            background-color: #fafafa;
             padding-top: 56px;
+        }
+        .navbar {
+            background-color: #fff !important;
+            border-bottom: 1px solid #dbdbdb;
+        }
+        .navbar-brand {
+            font-family: 'Grand Hotel', cursive;
+            font-size: 24px;
+        }
+        .post-container, .comment-container {
+            background-color: #fff;
+            border: 1px solid #dbdbdb;
+            border-radius: 3px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .thumb-icon {
+            font-size: 20px;
+            margin-right: 5px;
+        }
+        .comment-user {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .comment-form {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .comment-form textarea {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 3px;
         }
     </style>
 </head>
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
     <div class="container">
         <a class="navbar-brand" href="/">FlowerBlog</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,7 +67,10 @@
                     <a class="nav-link" href="/categories">Categories</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/register">Register</a>
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/profile.html">Profile</a>
                 </li>
             </ul>
         </div>
@@ -37,37 +79,125 @@
 
 <main role="main" class="container">
     <div class="row">
-        <div class="col-lg-6 offset-lg-3">
-            <h1 class="mt-4">Create Post</h1>
-            <form action="/createpost" method="post" enctype="multipart/form-data">
-                <div class="form-group">
-                    <label for="title">Title</label>
-                    <input type="text" id="title" name="title" class="form-control" required>
-                </div>
-        
-                <div class="form-group">
-                    <label for="content">Content</label>
-                    <textarea id="content" name="content" rows="10" class="form-control" required></textarea>
-                </div>
-        
-                <div class="form-group">
-                    <label for="image">Image</label>
-                    <input type="file" id="image" name="image" class="form-control-file">
-                </div>
-                <div class="card-body">
-                    <a href="C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\viewpost.html" class="btn btn-primary">View Post</a>
-                </div>
-                
-        
-            </form>
+        <div class="col-lg-8 offset-lg-2">
+            <div class="post-container">
+                <h2>Post an Image</h2>
+                <form id="postForm">
+                    <div class="form-group">
+                        <label for="postTitle">Title</label>
+                        <input type="text" class="form-control" id="postTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="postContent">Content</label>
+                        <textarea class="form-control" id="postContent" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="postImage">Upload Image</label>
+                        <input type="file" class="form-control-file" id="postImage" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Post</button>
+                </form>
+            </div>
+            <div id="postsContainer"></div>
         </div>
     </div>
 </main>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const postsContainer = document.getElementById('postsContainer');
+        let posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+        function renderPosts() {
+            postsContainer.innerHTML = '';
+            posts.forEach((post, index) => {
+                const postDiv = document.createElement('div');
+                postDiv.classList.add('post-container');
+                postDiv.innerHTML = `
+                    <div class="post-info">
+                        <h3>${post.title}</h3>
+                        <p>${post.content}</p>
+                        <div class="image-container">
+                            <img src="${post.image}" alt="Post Image">
+                        </div>
+                        <div>
+                            <button class="btn btn-primary mr-2 like-btn"><i class="fas fa-thumbs-up thumb-icon"></i></button>
+                            <span class="like-count">${post.likes}</span> likes
+                            <button class="btn btn-danger dislike-btn"><i class="fas fa-thumbs-down thumb-icon"></i></button>
+                            <span class="dislike-count">${post.dislikes}</span> dislikes
+                        </div>
+                        <h4>Comments</h4>
+                        <ul class="list-unstyled comment-list">${post.comments.map(comment => `<li><span class="comment-user">${comment.user}:</span> ${comment.text}</li>`).join('')}</ul>
+                        <form class="comment-form">
+                            <textarea class="form-control" rows="1" required></textarea>
+                            <button type="submit" class="btn btn-secondary">Comment</button>
+                        </form>
+                    </div>
+                `;
+                postsContainer.appendChild(postDiv);
+
+                // Like button functionality
+                postDiv.querySelector('.like-btn').addEventListener('click', () => {
+                    post.likes++;
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    renderPosts();
+                });
+
+                // Dislike button functionality
+                postDiv.querySelector('.dislike-btn').addEventListener('click', () => {
+                    post.dislikes++;
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    renderPosts();
+                });
+
+                // Comment form functionality
+                postDiv.querySelector('.comment-form').addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    const commentText = this.querySelector('textarea').value;
+                    if (commentText) {
+                        const userNames = ['Alice', 'Bob', 'Charlie', 'Diana', 'Emma', 'Frank'];
+                        const randomUserName = userNames[Math.floor(Math.random() * userNames.length)];
+                        post.comments.push({ user: randomUserName, text: commentText });
+                        localStorage.setItem('posts', JSON.stringify(posts));
+                        renderPosts();
+                    }
+                });
+            });
+        }
+
+        // Post form functionality
+        document.getElementById('postForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            const title = document.getElementById('postTitle').value;
+            const content = document.getElementById('postContent').value;
+            const imageFile = document.getElementById('postImage').files[0];
+            const reader = new FileReader();
+            reader.onloadend = function () {
+                const imageUrl = reader.result;
+                posts.push({
+                    title: title,
+                    content: content,
+                    image: imageUrl,
+                    likes: 0,
+                    dislikes: 0,
+                    comments: []
+                });
+                localStorage.setItem('posts', JSON.stringify(posts));
+                renderPosts();
+                document.getElementById('postForm').reset();
+            };
+            if (imageFile) {
+                reader.readAsDataURL(imageFile);
+            }
+        });
+
+        // Initial render
+        renderPosts();
+    });
+</script>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<script src="C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\app.js"></script> 
-
 </body>
 </html>
