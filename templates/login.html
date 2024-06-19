@@ -5,14 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FlowerBlog</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
         body {
+            background-color: #121212;
+            color: #E0E0E0;
             padding-top: 56px;
+        }
+        .navbar {
+            background-color: #1f1f1f !important;
+            border-bottom: 1px solid #333;
+        }
+        .navbar-brand {
+            font-family: 'Grand Hotel', cursive;
+            font-size: 24px;
+            color: #ffffff !important;
         }
         .carousel-item img {
             width: 100%;
             height: 500px;
             object-fit: cover;
+        }
+        .carousel-caption h5, .carousel-caption p {
+            color: #ffffff;
+        }
+        .card {
+            background-color: #1f1f1f;
+            border: 1px solid #333;
+        }
+        .card-title, .card-text, .card-footer, .card-header, h1, h5 {
+            color: #ffffff;
+        }
+        .card-body a {
+            background-color: #6200ea;
+            border: none;
+            color: #ffffff;
+        }
+        .post-container, .comment-container {
+            background-color: #1f1f1f;
+            border: 1px solid #333;
+            border-radius: 3px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .thumb-icon {
+            font-size: 20px;
+            margin-right: 5px;
+        }
+        .comment-user {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .comment-form {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .comment-form textarea {
+            flex-grow: 1;
+            margin-right: 10px;
+            background-color: #333;
+            border: 1px solid #444;
+            color: #E0E0E0;
+        }
+        .comment-form button {
+            background-color: #6200ea;
+            border: none;
+            color: #ffffff;
+        }
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 3px;
+        }
+        input[type="text"], textarea, input[type="file"] {
+            background-color: #333;
+            border: 1px solid #444;
+            color: #E0E0E0;
+        }
+        input[type="submit"], button[type="submit"] {
+            background-color: #6200ea;
+            border: none;
+            color: #ffffff;
+        }
+        h2, h3, h4 {
+            color: #ffffff;
         }
     </style>
 </head>
@@ -30,7 +107,7 @@
                     <a class="nav-link" href="/C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\profile.html">Profile</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\post.html">post</a>
+                    <a class="nav-link" href="/C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\post.html">Post</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/C:\Users\jkiso\OneDrive\Images\pro\myproject2-main\templates\categories.html">Categories</a>
@@ -81,22 +158,9 @@
     </div>
 </header>
 
-<main role="main" class="container">
-    <div class="row">
-        <div class="col-lg-8">
-            <h1 class="mt-4">Recent Posts</h1>
-            {{range .}}
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="card-title">{{.Title}}</h2>
-                    <p class="card-text">{{.Body}}</p>
-                    <a href="/post/{{.ID}}" class="btn btn-primary">Read More &rarr;</a>
-                </div>
-                <div class="card-footer text-muted">
-                    Posted on {{.Date}} by {{.Username}}
-                </div>
-            </div>
-            {{end}}
+
+            
+         
         </div>
 
         <div class="col-lg-4">
@@ -112,12 +176,86 @@
             </div>
         </div>
     </div>
+    <div class="col-lg-6 offset-lg-3">
+        <h1 class="mt-4">Recent Posts</h1>
+        <div id="postsContainer"></div>
+        <main role="main" class="container">
+    <div class="row">
+        <div class="col-lg-8">
+    </div>
+</div>
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const postsContainer = document.getElementById('postsContainer');
+    let posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+    function renderPosts() {
+        postsContainer.innerHTML = '';
+        posts.forEach(post => {
+            const postDiv = document.createElement('div');
+            postDiv.classList.add('post-container');
+            postDiv.innerHTML = `
+                <div class="post-info">
+                    <h3>${post.title}</h3>
+                    <p>${post.content}</p>
+                    <div class="image-container">
+                        <img src="${post.image}" alt="Post Image">
+                    </div>
+                    <div>
+                        <button class="btn btn-primary mr-2 like-btn"><i class="fas fa-thumbs-up thumb-icon"></i></button>
+                        <span class="like-count">${post.likes}</span> likes
+                        <button class="btn btn-danger dislike-btn"><i class="fas fa-thumbs-down thumb-icon"></i></button>
+                        <span class="dislike-count">${post.dislikes}</span> dislikes
+                    </div>
+                    <h4>Comments</h4>
+                    <ul class="list-unstyled comment-list">${post.comments.map(comment => `<li><span class="comment-user">${comment.user}:</span> ${comment.text}</li>`).join('')}</ul>
+                    <form class="comment-form">
+                        <textarea class="form-control" rows="1" required></textarea>
+                        <button type="submit" class="btn btn-secondary">Comment</button>
+                    </form>
+                </div>
+            `;
+            postsContainer.appendChild(postDiv);
+
+            // Like button functionality
+            postDiv.querySelector('.like-btn').addEventListener('click', () => {
+                post.likes++;
+                localStorage.setItem('posts', JSON.stringify(posts));
+                renderPosts();
+            });
+
+            // Dislike button functionality
+            postDiv.querySelector('.dislike-btn').addEventListener('click', () => {
+                post.dislikes++;
+                localStorage.setItem('posts', JSON.stringify(posts));
+                renderPosts();
+            });
+
+            // Comment form functionality
+            postDiv.querySelector('.comment-form').addEventListener('submit', function (event) {
+                event.preventDefault();
+                const commentText = this.querySelector('textarea').value;
+                if (commentText) {
+                    const userNames = ['Alice', 'Bob', 'Charlie', 'Diana', 'Emma', 'Frank'];
+                    const randomUserName = userNames[Math.floor(Math.random() * userNames.length)];
+                    post.comments.push({ user: randomUserName, text: commentText });
+                    localStorage.setItem('posts', JSON.stringify(posts));
+                    renderPosts();
+                }
+            });
+        });
+    }
+
+    renderPosts();
+});
+</script>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 </body>
 </html>
-
 
