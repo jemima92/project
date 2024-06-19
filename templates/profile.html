@@ -3,11 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile - FlowerBlog</title>
+    <title>Profile - FlowerBlog</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             padding-top: 56px;
+            background-color: #000000; /* Fond noir */
+            color: #FFFFFF; /* Texte blanc */
+        }
+        .navbar {
+            background-color: #1f1f1f !important; /* Barre de navigation gris foncé */
+            border-bottom: 1px solid #333; /* Bordure de la barre de navigation */
+        }
+        .navbar-brand {
+            font-family: 'Grand Hotel', cursive;
+            font-size: 24px;
+            color: #ffffff !important; /* Texte blanc pour le nom de la marque */
+        }
+        .profile-info {
+            margin-top: 20px;
+        }
+        .post-list {
+            margin-top: 30px;
+        }
+        .post-item {
+            background-color: #333333; /* Fond gris foncé pour chaque élément de post */
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .post-item h5 {
+            margin-bottom: 5px;
+        }
+        .post-item p {
+            color: #CCCCCC; /* Texte gris clair */
+            margin-bottom: 0;
         }
     </style>
 </head>
@@ -25,53 +55,68 @@
                     <a class="nav-link" href="C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\login.html">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\categories.html">Categories</a>
+                    <a class="nav-link" href="/C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\categories.html">Categories</a>
+            
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\viewpost.html">post</a>
-
+                    <a class="nav-link" href="/profile">Profile</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\post.html">create</a>
-
-
             </ul>
         </div>
     </div>
 </nav>
 
 <main role="main" class="container">
-    <div class="row">
-        <div class="col-lg-4">
-            <h1 class="mt-4">User Profile</h1>
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="card-title" id="username">{{username}}</h2>
-                    <p class="card-text"><strong>Email:</strong> <span id="email">{{email}}</span></p>
-                    <p class="card-text"><strong>Member since:</strong> <span id="member-since">{{member_since}}</span></p>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-8">
-            <h2 class="mt-4">Your Posts</h2>
-            {{range .Posts}}
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h2 class="card-title">{{.Title}}</h2>
-                    <p class="card-text">{{.Content}}</p>
-                    <a href="/post/{{.ID}}" class="btn btn-primary">Read More &rarr;</a>
-                </div>
-                <div class="card-footer text-muted">
-                    Posted on {{.Date}}
-                </div>
-            </div>
-            {{end}}
+    <div class="profile-info">
+        <h1 class="mt-4">Profile</h1>
+        <h3>Welcome, <span id="username"></span>!</h3>
+    </div>
+
+    <div class="post-list">
+        <h2 class="mt-4">Your Posts</h2>
+        <div id="posts">
+            <!-- Posts will be dynamically inserted here -->
         </div>
     </div>
 </main>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const loggedInUser = localStorage.getItem('loggedInUser');
+        const usernameElement = document.getElementById('username');
+        const postsContainer = document.getElementById('posts');
+
+        if (loggedInUser) {
+            usernameElement.textContent = loggedInUser;
+
+            // Simulated posts data (replace with actual backend integration)
+            const postsData = [
+                { title: 'First Post', content: 'This is your first post.' },
+                { title: 'Second Post', content: 'This is your second post.' }
+                // Add more posts as needed
+            ];
+
+            // Render posts
+            postsData.forEach(post => {
+                const postItem = document.createElement('div');
+                postItem.classList.add('post-item');
+                postItem.innerHTML = `
+                    <h5>${post.title}</h5>
+                    <p>${post.content}</p>
+                `;
+                postsContainer.appendChild(postItem);
+            });
+        } else {
+            // If no user is logged in, redirect to login page
+            window.location.replace("/login.html");
+        }
+    });
+</script>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 </body>
 </html>
+
