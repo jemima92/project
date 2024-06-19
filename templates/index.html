@@ -8,6 +8,34 @@
     <style>
         body {
             padding-top: 56px;
+            background-color: #000000; /* Fond noir */
+            color: #FFFFFF; /* Texte blanc */
+        }
+        .navbar {
+            background-color: #1f1f1f !important; /* Barre de navigation gris foncé */
+            border-bottom: 1px solid #333; /* Bordure de la barre de navigation */
+        }
+        .navbar-brand {
+            font-family: 'Grand Hotel', cursive;
+            font-size: 24px;
+            color: #ffffff !important; /* Texte blanc pour le nom de la marque */
+        }
+        .form-control {
+            background-color: #333333; /* Couleur de fond gris foncé pour les champs de formulaire */
+            color: #FFFFFF; /* Texte blanc pour les champs de formulaire */
+            border: 1px solid #666666; /* Bordure gris clair pour les champs de formulaire */
+        }
+        .btn-primary {
+            background-color: #333333; /* Bouton de couleur gris foncé */
+            color: #FFFFFF; /* Texte blanc pour le bouton */
+            border: 1px solid #666666; /* Bordure gris clair pour le bouton */
+        }
+        .btn-primary:hover {
+            background-color: #666666; /* Changement de couleur au survol */
+            color: #FFFFFF; /* Texte blanc au survol */
+        }
+        label {
+            color: #FFFFFF; /* Texte blanc pour les libellés */
         }
     </style>
 </head>
@@ -21,7 +49,17 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
-
+                <li class="nav-item">
+                    <a class="nav-link" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/categories">Categories</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/login">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/profile.html">Profile</a>
                 </li>
             </ul>
         </div>
@@ -32,7 +70,7 @@
     <div class="row">
         <div class="col-lg-6 offset-lg-3">
             <h1 class="mt-4">Login</h1>
-            <form action="/login" method="post">
+            <form id="loginForm" action="/login" method="post">
                 <div class="form-group">
                     <label for="username">Username</label>
                     <input type="text" class="form-control" id="username" name="username" required>
@@ -41,12 +79,12 @@
                     <label for="password">Password</label>
                     <input type="password" class="form-control" id="password" name="password" required>
                 </div>
-                <a class="btn btn-primary" href="/C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\login.html">Login</a>
+                <button type="submit" class="btn btn-primary">Login</button>
             </form>
         </div>
         <div class="col-lg-6 offset-lg-3">
             <h1 class="mt-4">Register</h1>
-            <form action="/register" method="post">
+            <form id="registerForm" action="/register" method="post">
                 <div class="form-group">
                     <label for="reg-username">Username</label>
                     <input type="text" class="form-control" id="reg-username" name="username" required>
@@ -58,19 +96,17 @@
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <a class="btn btn-primary" href="/C:\Users\jkiso\OneDrive\Images\pro\project-main\templates\login.html">Register</a>
-        </form>
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
     </div>
-</div>
-</main>
-    
 </main>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-<
+</body>
 </html>
 
